@@ -1,7 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 5.0.0'
-gem 'pg', '~> 0.18'
+gem 'httparty', '= 0.17.0'
+gem 'json', '= 1.8.6'
+gem 'pg', '= 0.18'
+gem 'rails', '= 5.1.7'
+gem 'tzinfo-data', '= 1.2019.1'
 
 gem 'active_model_serializers', '~> 0.10.2'
 gem 'enumerations', '~> 2.1'
