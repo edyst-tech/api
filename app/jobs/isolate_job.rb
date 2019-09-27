@@ -209,26 +209,17 @@ class IsolateJob < ApplicationJob
       return
     end
 
-    # trucate output strings
-    if submission.stdout != nil && submission.stdout.length > 4000
-      submission.stdout = submission.stdout[0..4000]
-    end
-
-    if submission.stdin != nil && submission.stdin.length > 4000
-      submission.stdin = submission.stdin[0..4000]
-    end
-
-    if submission.compile_output != nil && submission.compile_output.length > 4000
-      submission.compile_output = submission.compile_output[0..4000]
-    end
-
-    if submission.expected_output != nil && submission.expected_output.length > 4000
-      submission.expected_output = submission.expected_output[0..4000]
-    end
-
-    if submission.stderr != nil && submission.stderr.length > 4000
-      submission.stderr = submission.stderr[0..4000]
-    end
+    response_map = {
+      :compile_output => submission.compile_output == nil ? nil : submission.compile_output[0...4000],
+      :stdout => submission.stdout == nil ? nil : submission.stdout[0...4000],
+      :stderr => submission.stderr == nil ? nil : submission.stderr[0...4000],
+      :stdin => submission.stdin,
+      :expected_output => submission.expected_output,
+      :language_id => submission.language_id,
+      :status_id => submission.status_id,
+      :webhooks => submission.webhooks,
+      :token => submission.token,
+    }
 
     webhooks.each do | item |
       url = item["url"]
@@ -238,7 +229,7 @@ class IsolateJob < ApplicationJob
       response = HTTParty.post(
         url,
         headers: {"Content-Type" => "application/json"},
-        body: submission.to_json
+        body: response_map.to_json
       )
     end
   end
