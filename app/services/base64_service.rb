@@ -6,6 +6,6 @@ module Base64Service
 
   def self.decode(text)
     return nil unless text
-    Base64.decode64(text) #.force_encoding("UTF-8").encode
+    Base64.decode64(text).force_encoding("UTF-8").encode
   end
 end

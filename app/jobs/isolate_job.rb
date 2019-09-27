@@ -208,6 +208,19 @@ class IsolateJob < ApplicationJob
     if webhooks == nil
       return
     end
+
+    response_map = {
+      :compile_output => submission.compile_output == nil ? nil : submission.compile_output[0...4000],
+      :stdout => submission.stdout == nil ? nil : submission.stdout[0...4000],
+      :stderr => submission.stderr == nil ? nil : submission.stderr[0...4000],
+      :stdin => submission.stdin,
+      :expected_output => submission.expected_output,
+      :language_id => submission.language_id,
+      :status_id => submission.status_id,
+      :webhooks => submission.webhooks,
+      :token => submission.token,
+    }
+
     webhooks.each do | item |
       url = item["url"]
       if url == nil
@@ -216,7 +229,7 @@ class IsolateJob < ApplicationJob
       response = HTTParty.post(
         url,
         headers: {"Content-Type" => "application/json"},
-        body: submission.to_json
+        body: response_map.to_json
       )
     end
   end
