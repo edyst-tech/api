@@ -10,10 +10,10 @@ class HealthController < ApplicationController
     json = []
     status = :ok
     Resque.queues.each do |queue|
-      puts "Queue size is", Resque.size("default")
       workers = queues[queue]
       json << {
         queue: queue,
+        queue_size: Resque.size("default"),
         total: ENV["COUNT"].to_i,
         available: workers.count,
         idle: workers.count { |w| w.idle? },
