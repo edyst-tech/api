@@ -128,6 +128,7 @@ class IsolateJob < ApplicationJob
     -E LANG -E LANGUAGE -E LC_ALL \
     -d '/etc':'noexec' \
     -d '/usr/src/api':'noexec' \
+    --share-net \
     --run \
     -- #{submission.language.run_cmd} \
     < #{stdin} > #{stdout} 2> #{stderr} \
