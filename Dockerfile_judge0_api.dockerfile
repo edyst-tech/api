@@ -33,6 +33,8 @@ CMD rm -f tmp/pids/server.pid && \
 # Install tabulate, widechars to judge sql questions
 # Sql questions are simple python scripts using buildin sqlite3 as dialect
 RUN pip3 install tabulate[widechars]
+# Install python requests
+RUN pip3 install requests
 
 LABEL maintainer="Abhinandan Panigrahi, abhi@edyst.com" \
       version="1.0.0"
