@@ -30,5 +30,9 @@ CMD rm -f tmp/pids/server.pid && \
     rails db:create db:migrate db:seed && \
     rails s -b 0.0.0.0
 
+# Install tabulate, widechars to judge sql questions
+# Sql questions are simple python scripts using buildin sqlite3 as dialect
+RUN pip3 install tabulate[widechars]
+
 LABEL maintainer="Abhinandan Panigrahi, abhi@edyst.com" \
       version="1.0.0"
