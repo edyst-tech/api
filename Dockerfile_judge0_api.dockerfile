@@ -1,5 +1,7 @@
 FROM edyst/judge0-api-base:latest
 
+RUN sed -i -e 's|disco|eoan|g' /etc/apt/sources.list
+
 RUN apt-get update && \
     apt-get install -y \
       libpq-dev \
@@ -19,7 +21,7 @@ RUN echo "gem: --no-document" > /root/.gemrc && \
 EXPOSE 3000
 
 WORKDIR /usr/src/api
-COPY Gemfile* /usr/src/api/
+COPY Gemfile /usr/src/api
 RUN RAILS_ENV=production bundle
 
 COPY . /usr/src/api
