@@ -31,6 +31,16 @@ languages = [
     name: "Text (plain text)",
     source_file: "source.txt",
     run_cmd: "/bin/cat source.txt"
+  },
+  {
+    name: "Bash (5.0.3)",
+    source_file: "main.sh",
+    run_cmd: "/usr/bin/bash main.sh"
+  },
+  {
+    name: "Javascript (Node 10.15.2)",
+    source_file: "main.js",
+    run_cmd: "/usr/bin/node main.js"
   }
 ]
 
