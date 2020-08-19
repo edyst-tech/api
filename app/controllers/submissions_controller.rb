@@ -78,6 +78,7 @@ class SubmissionsController < ApplicationController
       :enable_per_process_and_thread_memory_limit,
       :max_file_size,
       { webhooks: [ :url, postdata: {} ] },
+      :attachments => []
     )
     
     params[:base64_encoded] == "true" ? decode_params(submission_params) : submission_params

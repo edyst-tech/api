@@ -31,6 +31,7 @@
 #  message                                    :text
 #  wall_time                                  :decimal(, )
 #  webhooks                                   :json
+#  attachments                                :text             default([]), is an Array
 #
 # Indexes
 #
