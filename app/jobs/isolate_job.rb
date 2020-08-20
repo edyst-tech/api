@@ -20,6 +20,7 @@ class IsolateJob < ApplicationJob
     submission.number_of_runs.times do
       init
       write
+      download_attachments
       if compile == :failure
         clean
         call_webhooks(submission)
@@ -166,6 +167,7 @@ class IsolateJob < ApplicationJob
   def clean
     `sudo rm -rf #{box}/* #{tmp}/*` # Remove all files from the box before doing cleanup with isolate.
     `sudo rm -rf #{stdin} #{stdout} #{stderr} #{meta}`
+    `sudo rm -rf #{workdir}/*`
     `isolate #{cgroups} -b #{id} --cleanup`
   end
 
@@ -232,6 +234,17 @@ class IsolateJob < ApplicationJob
         headers: {"Content-Type" => "application/json"},
         body: response_map.to_json
       )
+    end
+  end
+
+  def download_attachments
+    @attachments = submission.attachments
+    @attachments.each do | attachment |
+      file_name = attachment.split('/')[-1]
+      target_path = box + file_name
+      `sudo touch #{target_path} && sudo chown $(whoami): #{target_path}`
+      response = HTTParty.get(attachment)
+      File.open(target_path, "wb") { |f| f.write(response.body) }
     end
   end
 end
