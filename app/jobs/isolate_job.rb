@@ -237,8 +237,8 @@ class IsolateJob < ApplicationJob
   end
 
   def download_attachments
-    @attachments = submission.attachments
-    @attachments.each do | attachment |
+    attachments = submission.attachments
+    attachments.each do | attachment |
       file_name = attachment.split('/')[-1]
       target_path = box + file_name
       `sudo touch #{target_path} && sudo chown $(whoami): #{target_path}`
