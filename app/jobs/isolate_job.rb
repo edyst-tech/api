@@ -167,7 +167,6 @@ class IsolateJob < ApplicationJob
   def clean
     `sudo rm -rf #{box}/* #{tmp}/*` # Remove all files from the box before doing cleanup with isolate.
     `sudo rm -rf #{stdin} #{stdout} #{stderr} #{meta}`
-    `sudo rm -rf #{workdir}/*`
     `isolate #{cgroups} -b #{id} --cleanup`
   end
 
