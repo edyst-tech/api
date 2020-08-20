@@ -244,6 +244,23 @@ class IsolateJob < ApplicationJob
       `sudo touch #{target_path} && sudo chown $(whoami): #{target_path}`
       response = HTTParty.get(attachment)
       File.open(target_path, "wb") { |f| f.write(response.body) }
+
+      name, ext = file_name.split(".")
+      if ext == "zip"
+        extract_compressed_file(file_name)
+      end
     end
+  end
+
+  def extract_compressed_file(file)
+    unzip = "/bin/unzip -d /box/ /box/#{file}"
+    command = "isolate #{cgroups} \
+    -s \
+    -b #{id} \
+    -E HOME=#{workdir} \
+    --run \
+    -- #{unzip}
+    "
+    `#{command}`
   end
 end
