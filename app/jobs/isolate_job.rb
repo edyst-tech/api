@@ -239,10 +239,11 @@ class IsolateJob < ApplicationJob
   def download_attachments
     attachments = submission.attachments
     attachments.each do | attachment |
-      file_name = attachment.split('/')[-1]
+      file_name = attachment["file_name"]
+      public_url = attachment["public_url"]
       target_path = box + file_name
       `sudo touch #{target_path} && sudo chown $(whoami): #{target_path}`
-      response = HTTParty.get(attachment)
+      response = HTTParty.get(public_url)
       File.open(target_path, "wb") { |f| f.write(response.body) }
 
       name, ext = file_name.split(".")
