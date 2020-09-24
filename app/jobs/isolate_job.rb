@@ -20,6 +20,7 @@ class IsolateJob < ApplicationJob
     submission.number_of_runs.times do
       init
       write
+      download_attachments
       if compile == :failure
         clean
         call_webhooks(submission)
@@ -233,5 +234,34 @@ class IsolateJob < ApplicationJob
         body: response_map.to_json
       )
     end
+  end
+
+  def download_attachments
+    attachments = submission.attachments
+    attachments.each do | attachment |
+      file_name = attachment["file_name"]
+      public_url = attachment["public_url"]
+      target_path = box + file_name
+      `sudo touch #{target_path} && sudo chown $(whoami): #{target_path}`
+      response = HTTParty.get(public_url)
+      File.open(target_path, "wb") { |f| f.write(response.body) }
+
+      name, ext = file_name.split(".")
+      if ext == "zip"
+        extract_compressed_file(file_name)
+      end
+    end
+  end
+
+  def extract_compressed_file(file)
+    unzip = "/bin/unzip -d /box/ /box/#{file}"
+    command = "isolate #{cgroups} \
+    -s \
+    -b #{id} \
+    -E HOME=#{workdir} \
+    --run \
+    -- #{unzip}
+    "
+    `#{command}`
   end
 end
