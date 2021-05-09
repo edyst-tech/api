@@ -1,5 +1,8 @@
 FROM edyst/judge0-api-base:latest
 
+LABEL maintainer="Abhinandan Panigrahi, abhi@edyst.com" \
+    version="1.0.0"
+
 RUN sed -i -e 's|disco|eoan|g' /etc/apt/sources.list
 
 RUN apt-get update && \
@@ -9,8 +12,6 @@ RUN apt-get update && \
     npm \
     sudo
 
-#ENV PATH "/usr/local/ruby-2.3.3/bin:/opt/.gem/bin:$PATH"
-#ENV GEM_HOME "/opt/.gem/"
 RUN echo "gem: --no-document" > /root/.gemrc && \
     gem install \
     bundler \
@@ -21,19 +22,16 @@ RUN echo "gem: --no-document" > /root/.gemrc && \
 EXPOSE 3000
 
 WORKDIR /usr/src/api
-COPY Gemfile /usr/src/api
+COPY Gemfile* /usr/src/api/
 RUN RAILS_ENV=production bundle
 
-COPY . /usr/src/api
-RUN RAILS_ENV=production bundle && \
-    ./scripts/prod-gen-api-docs
+# Install python dependencies
+COPY python_requirements.txt /usr/src/api
+RUN pip3 install -r python_requirements.txt
 
 CMD rm -f tmp/pids/server.pid && \
     rails db:create db:migrate db:seed && \
     rails s -b 0.0.0.0
 
-# Install python dependencies
-RUN pip3 install -r python_requirements.txt
-
-LABEL maintainer="Abhinandan Panigrahi, abhi@edyst.com" \
-    version="1.0.0"
+COPY . /usr/src/api
+RUN ./scripts/prod-gen-api-docs
