@@ -3,21 +3,26 @@ FROM edyst/judge0-api-base:latest
 LABEL maintainer="Abhinandan Panigrahi, abhi@edyst.com" \
     version="1.0.0"
 
-RUN sed -i -e 's|disco|eoan|g' /etc/apt/sources.list
+RUN sed -i -e 's|disco|jammy|g' /etc/apt/sources.list
 
 RUN apt-get update && \
     apt-get install -y \
     libpq-dev \
     nodejs \
     npm \
-    sudo
+    sudo \
+    python3 \
+    python3-pip \
+    python3-wheel \
+    python3-setuptools \
+    python3-distlib
 
 RUN echo "gem: --no-document" > /root/.gemrc && \
     gem install \
     bundler \
     pg && \
-    /usr/bin/npm install -g npm@latest && \
-    sudo /usr/local/bin/npm install -g aglio --unsafe-perm=true --allow-root
+    /usr/bin/npm install -g npm@8.19.3 && \
+    sudo /usr/local/bin/npm install -g aglio@2.3.0 --unsafe-perm=true --allow-root
 
 EXPOSE 3000
 
