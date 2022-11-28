@@ -11,6 +11,7 @@ gem 'enumerations', '~> 2.1'
 gem 'puma', '~> 3.0'
 gem 'rack-cors', require: 'rack/cors'
 gem 'resque', '~> 2.0.0'
+gem 'redis', '~> 4.0.0'
 gem 'will_paginate', '~> 3.1'
 
 group :development do
